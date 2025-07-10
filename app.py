@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from config import Config
 from models import db
 
@@ -6,6 +7,8 @@ def createApp():
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
+    
+    CORS(app)
 
     from routes.auth import authBp
     from routes.admin import adminBp
