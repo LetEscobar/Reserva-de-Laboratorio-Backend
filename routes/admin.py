@@ -36,22 +36,6 @@ def inativarUser(id):
     db.session.commit()
     return jsonify({'message': 'Usuário inativado com sucesso'})
 
-
-@adminBp.route('/labs', methods=['POST'])
-def createLab():
-    data = request.json
-    typeName = data['type']
-    labType = LabType.query.filter_by(name=typeName).first()
-    if not labType:
-        labType = LabType(name=typeName)
-        db.session.add(labType)
-        db.session.commit()
-
-    lab = Lab(name=data['name'], labTypeId=labType.id)
-    db.session.add(lab)
-    db.session.commit()
-    return jsonify({'message': 'Laboratório cadastrado com sucesso'})
-
 @adminBp.route('/labs/<int:id>', methods=['PUT'])
 def updateLab(id):
     lab = Lab.query.get_or_404(id)
