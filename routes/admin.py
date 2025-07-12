@@ -7,11 +7,15 @@ adminBp = Blueprint('admin', __name__)
 @adminBp.route('/users', methods=['POST'])
 def createUser():
     data = request.json
+
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({'error': 'Email já cadastrado'}), 409
+
     newUser = User(
         email=data['email'],
         password=data['password'],
         name=data['name'],
-        isAdmin=False
+        is_admin=False
     )
     db.session.add(newUser)
     db.session.commit()
@@ -66,6 +70,10 @@ def inativarLab(id):
 @adminBp.route('/classes', methods=['POST'])
 def createClassGroup():
     data = request.json
+
+    if 'name' not in data or 'course' not in data:
+        return jsonify({'error': 'Nome e curso são obrigatórios'}), 400
+
     courseName = data['course']
     course = Course.query.filter_by(name=courseName).first()
     if not course:
@@ -76,7 +84,12 @@ def createClassGroup():
     classGroup = ClassGroup(name=data['name'], courseId=course.id)
     db.session.add(classGroup)
     db.session.commit()
-    return jsonify({'message': 'Turma cadastrada com sucesso'})
+    
+    return jsonify({
+        'message': 'Turma cadastrada com sucesso',
+        'id': classGroup.id,
+        'name': classGroup.name
+    })
 
 @adminBp.route('/classes/<int:id>', methods=['PUT'])
 def updateClassGroup(id):

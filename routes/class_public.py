@@ -5,7 +5,7 @@ classPublicBp = Blueprint('classPublic', __name__)
 
 @classPublicBp.route('/classes', methods=['GET'])
 def listClasses():
-    classes = ClassGroup.all()
+    classes = ClassGroup.query.filter_by(ativo=True).all()
     return jsonify([{'id': c.id, 'name': c.name} for c in classes])
 
 

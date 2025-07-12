@@ -8,13 +8,24 @@ def listLabs():
     if request.method == 'OPTIONS':
         return jsonify(), 200
     
-    labs = Lab.query.filter_by(ativo=True).all()
-    return jsonify([{
-        'id': lab.id,
-        'name': lab.name,
-        'type': lab.lab_type.name,
-        'reservations_count': len(lab.reservations)
-        } for lab in labs])
+    try:
+        labs = Lab.query.filter_by(ativo=True).all()
+        resultado = []
+        for lab in labs:
+            print(f"🔍 Lab: {lab.name}")
+            tipo = lab.lab_type.name if lab.lab_type else "Sem tipo"
+            print(f"📌 Tipo: {tipo}")
+            reservas = lab.reservations or []
+            resultado.append({
+                'id': lab.id,
+                'name': lab.name,
+                'type': tipo,
+                'reservations_count': len(reservas)
+            })
+        return jsonify(resultado)
+    except Exception as e:
+        print("❌ Erro ao listar labs:", e)
+        return jsonify({'error': 'Erro ao buscar laboratórios'}), 500
 
 @labBp.route('/', methods=['POST', 'OPTIONS'])
 def create_lab():

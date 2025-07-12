@@ -5,9 +5,13 @@ from dateutil.parser import parse
 
 reservationBp = Blueprint('reservation', __name__)
 
-@reservationBp.route('/', methods=['POST'])
+@reservationBp.route('/', methods=['POST', 'OPTIONS'])
+@reservationBp.route('', methods=['POST', 'OPTIONS'])
 def createReservation():
-    data = request.json
+    if request.method == 'OPTIONS':
+        return jsonify({'ok': True}), 200
+
+    data = request.get_json()
 
     required_fields = ['labId', 'responsible', 'classGroupId', 'startTime']
     if not all(field in data for field in required_fields):
@@ -76,13 +80,14 @@ def listReservations():
     lab_id = request.args.get('labId')
     if not lab_id:
         return jsonify({'error': 'Parâmetro labId é obrigatório'}), 400
-        
+
     reservations = Reservation.query.filter_by(lab_id=lab_id).all()
     return jsonify([
         {
             'id': r.id,
             'start': r.start_time.isoformat(),
             'end': r.end_time.isoformat(),
+            'day': r.start_time.date().isoformat(),
             'responsible': r.responsible,
             'class_group': r.class_group.name,
             'students': r.students.split(',') if r.students else []

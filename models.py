@@ -45,7 +45,7 @@ class ClassGroup(db.Model):
     __tablename__ = 'classgroup'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), name='courseId', nullable=False)
+    courseId = db.Column(db.Integer, db.ForeignKey('course.id'), name='courseId', nullable=False)
     ativo = db.Column(db.Boolean, default=True)
 
     course = db.relationship('Course', back_populates='class_groups')
@@ -63,6 +63,7 @@ class Reservation(db.Model):
     notes = db.Column(db.Text)
     repeat_weekly = db.Column(db.Boolean, name='repeatWeekly', default=False)
     repeat_until = db.Column(db.DateTime, name='repeatUntil')
+    students = db.Column(db.String, nullable=True)
 
     lab = db.relationship('Lab', back_populates='reservations')
     class_group = db.relationship('ClassGroup', back_populates='reservations')
