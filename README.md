@@ -62,7 +62,19 @@ pip freeze
 
 ---
 
-### ✅ 6. Iniciar o servidor
+### ✅ 6. Criar o primeiro usuário manualmente
+
+Execute o comando:
+
+```bash
+python create_admin.py 
+```
+Usuário default: admin@estudante.ifms.edu.br
+Senha default: Senha@123
+
+---
+
+### ✅ 7. Iniciar o servidor
 
 Execute o comando:
 
